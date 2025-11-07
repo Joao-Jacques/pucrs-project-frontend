@@ -1,27 +1,40 @@
 //Series form component for the series application
 import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
-const SeriesForm = ({ onSubmit }) => {
+const SeriesForm = ({ onSubmit = () => {} }) => {
     const [title, setTitle] = useState('');
     const [numberSeasons, setNumberSeasons] = useState(1);
-    const [seasonReleaseDate, setSeasonReleaseDate] = useState('');
+    const [seasonReleaseDate, setSeasonReleaseDate] = useState(null);
     const [director, setDirector] = useState('');
     const [producer, setProducer] = useState('');
     const [genre, setGenre] = useState('');
-    const [viewingDate, setViewingDate] = useState('');
+    const [viewingDate, setViewingDate] = useState(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        // convert Date objects (from DatePicker) to ISO yyyy-mm-dd strings for storage/compatibility
+        const formattedSeasonReleaseDate = seasonReleaseDate ? seasonReleaseDate.toISOString().split('T')[0] : '';
+        const formattedViewingDate = viewingDate ? viewingDate.toISOString().split('T')[0] : '';
+
         const newSeries = {
-            title,
+            title: title.trim(),
             numberSeasons,
-            seasonReleaseDate,
+            seasonReleaseDate: formattedSeasonReleaseDate,
             director,
             producer,
             genre,
-            viewingDate
+            viewingDate: formattedViewingDate
         };
         onSubmit(newSeries);
+        setTitle('');
+        setNumberSeasons(1);
+        setSeasonReleaseDate(null);
+        setDirector('');
+        setProducer('');
+        setGenre('');
+        setViewingDate(null);
     };
     return (
         <form className="series-form" onSubmit={handleSubmit}>
@@ -32,11 +45,23 @@ const SeriesForm = ({ onSubmit }) => {
             </label>
             <label>
                 Número de Temporadas:
-                <input type="number" value={numberSeasons} onChange={(e) => setNumberSeasons(e.target.value)} min="1" required />
+                <input
+                    type="number"
+                    value={numberSeasons}
+                    onChange={(e) => setNumberSeasons(Math.max(1, Number(e.target.value)))}
+                    min="1"
+                    required
+                />
             </label>
             <label>
                 Data de Lançamento da Temporada:
-                <input type="date" value={seasonReleaseDate} onChange={(e) => setSeasonReleaseDate(e.target.value)} required />
+                <DatePicker
+                    selected={seasonReleaseDate}
+                    onChange={(date) => setSeasonReleaseDate(date)}
+                    dateFormat="dd-MM-yyyy"
+                    placeholderText="dd-MM-yyyy"
+                    required
+                />
             </label>
             <label>
                 Diretor:
@@ -52,7 +77,13 @@ const SeriesForm = ({ onSubmit }) => {
             </label>
             <label>
                 Data de Visualização:
-                <input type="date" value={viewingDate} onChange={(e) => setViewingDate(e.target.value)} required />
+                <DatePicker
+                    selected={viewingDate}
+                    onChange={(date) => setViewingDate(date)}
+                    dateFormat="dd-MM-yyyy"
+                    placeholderText="dd-MM-yyyy"
+                    required
+                />
             </label>
             <button type="submit">Adicionar Série</button>
         </form>

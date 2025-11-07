@@ -1,10 +1,10 @@
 // series application main App component
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/home.jsx';
 import About from './pages/about.jsx';
 import Register from './pages/register.jsx';
-import SeriesList from './components/seriesList/seriesList.jsx';
+import SeriesListPage from './pages/seriesList.jsx';
 
 const App = () => {
     const sampleSeries = [
@@ -27,14 +27,38 @@ const App = () => {
             viewingDate: "2020-11-15"
         }
     ];
+    const [series, setSeries] = useState(sampleSeries);
+
+    const handleAddSeries = (newSeries) => {
+        setSeries((prevSeries) => [...prevSeries, newSeries]);
+    };
+
+    const handleEditSeries = (index, updatedSeries) => {
+        setSeries((prevSeries) =>
+            prevSeries.map((serie, idx) => (idx === index ? { ...serie, ...updatedSeries } : serie))
+        );
+    };
+
+    const handleDeleteSeries = (index) => {
+        setSeries((prevSeries) => prevSeries.filter((_, idx) => idx !== index));
+    };
 
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/series-list" element={<SeriesList series={sampleSeries} />} />
+                <Route path="/register" element={<Register onRegisterSeries={handleAddSeries} />} />
+                <Route
+                    path="/series-list"
+                    element={
+                        <SeriesListPage
+                            series={series}
+                            onEditSeries={handleEditSeries}
+                            onDeleteSeries={handleDeleteSeries}
+                        />
+                    }
+                />
             </Routes>
         </Router>
     );
