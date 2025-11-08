@@ -10,39 +10,57 @@ const formatDate = (isoDate) => {
 }
 
 const SeriesList = ({ series, onEditSeries, onDeleteSeries }) => {
+    if (!series || series.length === 0) {
+        return (
+            <div className="series-list empty">
+                <p>Nenhuma série cadastrada.</p>
+            </div>
+        );
+    }
+
     return (
         <div className="series-list">
-            {series.length === 0 ? (
-                <p>Nenhuma série cadastrada.</p>
-            ) : (
-                <ul>
+            <table className="series-table">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Número de Temporadas</th>
+                        <th>Data de Lançamento</th>
+                        <th>Diretor</th>
+                        <th>Produtor</th>
+                        <th>Gênero</th>
+                        <th>Data de Visualização</th>
+                        {(onEditSeries || onDeleteSeries) && <th>Ações</th>}
+                    </tr>
+                </thead>
+                <tbody>
                     {series.map((serie, index) => (
-                        <li key={index}>
-                            <h3>{serie.title}</h3>
-                            <p>Número de Temporadas: {serie.numberSeasons}</p>
-                            <p>Data de Lançamento da Temporada: {formatDate(serie.seasonReleaseDate)}</p>
-                            <p>Diretor: {serie.director}</p>
-                            <p>Produtor: {serie.producer}</p>
-                            <p>Gênero: {serie.genre}</p>
-                            <p>Data de Visualização: {formatDate(serie.viewingDate)}</p>
+                        <tr key={index}>
+                            <td data-label="Título">{serie.title}</td>
+                            <td data-label="Número de Temporadas">{serie.numberSeasons}</td>
+                            <td data-label="Data de Lançamento">{formatDate(serie.seasonReleaseDate)}</td>
+                            <td data-label="Diretor">{serie.director}</td>
+                            <td data-label="Produtor">{serie.producer}</td>
+                            <td data-label="Gênero">{serie.genre}</td>
+                            <td data-label="Data de Visualização">{formatDate(serie.viewingDate)}</td>
                             {(onEditSeries || onDeleteSeries) && (
-                                <div className="series-actions">
+                                <td className="series-actions" data-label="Ações">
                                     {onEditSeries && (
-                                        <button type="button" onClick={() => onEditSeries(index)}>
+                                        <button type="button" className="edit" onClick={() => onEditSeries(index)}>
                                             Editar
                                         </button>
                                     )}
                                     {onDeleteSeries && (
-                                        <button type="button" onClick={() => onDeleteSeries(index)}>
+                                        <button type="button" className="delete" onClick={() => onDeleteSeries(index)}>
                                             Excluir
                                         </button>
                                     )}
-                                </div>
+                                </td>
                             )}
-                        </li>
+                        </tr>
                     ))}
-                </ul>
-            )}
+                </tbody>
+            </table>
         </div>
     );
 };
