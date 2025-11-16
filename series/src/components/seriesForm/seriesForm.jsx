@@ -1,93 +1,126 @@
-//Series form component for the series application
+// Series form redesigned with Material UI components
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import MovieCreationRoundedIcon from '@mui/icons-material/MovieCreationRounded';
+
+const initialValues = {
+  title: '',
+  numberSeasons: '1',
+  seasonReleaseDate: '',
+  director: '',
+  producer: '',
+  genre: '',
+  viewingDate: ''
+};
 
 const SeriesForm = ({ onSubmit = () => {} }) => {
-    const [title, setTitle] = useState('');
-    const [numberSeasons, setNumberSeasons] = useState(1);
-    const [seasonReleaseDate, setSeasonReleaseDate] = useState(null);
-    const [director, setDirector] = useState('');
-    const [producer, setProducer] = useState('');
-    const [genre, setGenre] = useState('');
-    const [viewingDate, setViewingDate] = useState(null);
+  const [values, setValues] = useState(initialValues);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // convert Date objects (from DatePicker) to ISO yyyy-mm-dd strings for storage/compatibility
-        const formattedSeasonReleaseDate = seasonReleaseDate ? seasonReleaseDate.toISOString().split('T')[0] : '';
-        const formattedViewingDate = viewingDate ? viewingDate.toISOString().split('T')[0] : '';
+  const handleChange = (field) => (event) => {
+    setValues((prev) => ({
+      ...prev,
+      [field]: event.target.value
+    }));
+  };
 
-        const newSeries = {
-            title: title.trim(),
-            numberSeasons,
-            seasonReleaseDate: formattedSeasonReleaseDate,
-            director,
-            producer,
-            genre,
-            viewingDate: formattedViewingDate
-        };
-        onSubmit(newSeries);
-        setTitle('');
-        setNumberSeasons(1);
-        setSeasonReleaseDate(null);
-        setDirector('');
-        setProducer('');
-        setGenre('');
-        setViewingDate(null);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const numberSeasons = Math.max(1, Number(values.numberSeasons) || 1);
+
+    const newSeries = {
+      title: values.title.trim(),
+      numberSeasons,
+      seasonReleaseDate: values.seasonReleaseDate,
+      director: values.director.trim(),
+      producer: values.producer.trim(),
+      genre: values.genre.trim(),
+      viewingDate: values.viewingDate
     };
-    return (
-        <form className="series-form" onSubmit={handleSubmit}>
-            <h2>Adicione uma nova série</h2>
-            <label>
-                Título:
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            </label>
-            <label>
-                Número de Temporadas:
-                <input
-                    type="number"
-                    value={numberSeasons}
-                    onChange={(e) => setNumberSeasons(Math.max(1, Number(e.target.value)))}
-                    min="1"
-                    required
-                />
-            </label>
-            <label>
-                Data de Lançamento da Temporada:
-                <DatePicker
-                    selected={seasonReleaseDate}
-                    onChange={(date) => setSeasonReleaseDate(date)}
-                    dateFormat="dd-MM-yyyy"
-                    placeholderText="dd-MM-yyyy"
-                    required
-                />
-            </label>
-            <label>
-                Diretor:
-                <input type="text" value={director} onChange={(e) => setDirector(e.target.value)} required />
-            </label>
-            <label>
-                Produtor:
-                <input type="text" value={producer} onChange={(e) => setProducer(e.target.value)} required />
-            </label>
-            <label>
-                Gênero:
-                <input type="text" value={genre} onChange={(e) => setGenre(e.target.value)} required />
-            </label>
-            <label>
-                Data de Visualização:
-                <DatePicker
-                    selected={viewingDate}
-                    onChange={(date) => setViewingDate(date)}
-                    dateFormat="dd-MM-yyyy"
-                    placeholderText="dd-MM-yyyy"
-                    required
-                />
-            </label>
-            <button type="submit">Adicionar Série</button>
-        </form>
-    );
+
+    onSubmit(newSeries);
+    setValues(initialValues);
+  };
+
+  return (
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        width: '100%'
+      }}
+    >
+      <Stack spacing={2.5}>
+        <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+          <MovieCreationRoundedIcon color="primary" />
+          <Typography variant="h5" fontWeight={700}>
+            Adicione uma nova série
+          </Typography>
+        </Stack>
+        <TextField
+          label="Título"
+          value={values.title}
+          onChange={handleChange('title')}
+          required
+          fullWidth
+        />
+        <TextField
+          label="Número de Temporadas"
+          type="number"
+          value={values.numberSeasons}
+          onChange={handleChange('numberSeasons')}
+          InputProps={{ inputProps: { min: 1 } }}
+          required
+          fullWidth
+        />
+        <TextField
+          label="Data de Lançamento da Temporada"
+          type="date"
+          value={values.seasonReleaseDate}
+          onChange={handleChange('seasonReleaseDate')}
+          InputLabelProps={{ shrink: true }}
+          required
+          fullWidth
+        />
+        <TextField
+          label="Diretor"
+          value={values.director}
+          onChange={handleChange('director')}
+          required
+          fullWidth
+        />
+        <TextField
+          label="Produtor"
+          value={values.producer}
+          onChange={handleChange('producer')}
+          required
+          fullWidth
+        />
+        <TextField
+          label="Gênero"
+          value={values.genre}
+          onChange={handleChange('genre')}
+          required
+          fullWidth
+        />
+        <TextField
+          label="Data de Visualização"
+          type="date"
+          value={values.viewingDate}
+          onChange={handleChange('viewingDate')}
+          InputLabelProps={{ shrink: true }}
+          required
+          fullWidth
+        />
+        <Button type="submit" variant="contained" size="large">
+          Adicionar Série
+        </Button>
+      </Stack>
+    </Box>
+  );
 };
 
 export default SeriesForm;
