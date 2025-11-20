@@ -35,6 +35,16 @@ Principais tecnologias: React 19, React Router, React DatePicker, Vite e ESLint.
 - `npm run build` – gera a build otimizada para produção.
 - `npm run preview` – serve a build gerada para validação local.
 - `npm run lint` – roda o ESLint com as regras do projeto.
+- `npm run cy:open` – abre a interface do Cypress para executar os fluxos de ponta a ponta.
+- `npm run cy:run` – roda a suíte do Cypress em modo headless (útil para CI/CD).
+
+## Testes com Cypress
+Os testes end-to-end validam os fluxos principais (listagem, cadastro, edição, remoção e navegação). Eles usam interceptações da API para simular respostas do backend, garantindo resultados reproduzíveis. Antes de rodá-los, mantenha as dependências instaladas e o servidor de desenvolvimento em execução:
+
+```bash
+npm run dev
+npm run cy:open # ou npm run cy:run
+```
 
 ## Estrutura básica
 ```
