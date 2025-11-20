@@ -1,5 +1,5 @@
 // Series form redesigned with Material UI components
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import MovieCreationRoundedIcon from '@mui/icons-material/MovieCreationRounded';
 
-const initialValues = {
+const defaultValues = {
   title: '',
   numberSeasons: '1',
   seasonReleaseDate: '',
@@ -17,8 +17,35 @@ const initialValues = {
   viewingDate: ''
 };
 
-const SeriesForm = ({ onSubmit = () => {} }) => {
-  const [values, setValues] = useState(initialValues);
+const normalizeDate = (value) => {
+  if (!value) return '';
+  const stringValue = String(value);
+  return stringValue.includes('T') ? stringValue.split('T')[0] : stringValue;
+};
+
+const normalizeValues = (values = {}) => ({
+  title: values.title ?? '',
+  numberSeasons: values.numberSeasons ? String(values.numberSeasons) : '1',
+  seasonReleaseDate: normalizeDate(values.seasonReleaseDate),
+  director: values.director ?? '',
+  producer: values.producer ?? '',
+  genre: values.genre ?? '',
+  viewingDate: normalizeDate(values.viewingDate)
+});
+
+const SeriesForm = ({
+  onSubmit = () => Promise.resolve(),
+  initialValues = defaultValues,
+  submitLabel = 'Adicionar Série',
+  savingLabel = 'Salvando...',
+  titleText = 'Adicione uma nova série'
+}) => {
+  const [values, setValues] = useState(normalizeValues(initialValues));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setValues(normalizeValues(initialValues));
+  }, [initialValues]);
 
   const handleChange = (field) => (event) => {
     setValues((prev) => ({
@@ -27,8 +54,11 @@ const SeriesForm = ({ onSubmit = () => {} }) => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const numberSeasons = Math.max(1, Number(values.numberSeasons) || 1);
 
     const newSeries = {
@@ -41,8 +71,14 @@ const SeriesForm = ({ onSubmit = () => {} }) => {
       viewingDate: values.viewingDate
     };
 
-    onSubmit(newSeries);
-    setValues(initialValues);
+    try {
+      await onSubmit(newSeries);
+      setValues(normalizeValues(defaultValues));
+    } catch (error) {
+      console.error('Erro ao enviar série', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -57,7 +93,7 @@ const SeriesForm = ({ onSubmit = () => {} }) => {
         <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
           <MovieCreationRoundedIcon color="primary" />
           <Typography variant="h5" fontWeight={700}>
-            Adicione uma nova série
+            {titleText}
           </Typography>
         </Stack>
         <TextField
@@ -115,8 +151,8 @@ const SeriesForm = ({ onSubmit = () => {} }) => {
           required
           fullWidth
         />
-        <Button type="submit" variant="contained" size="large">
-          Adicionar Série
+        <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+          {isSubmitting ? savingLabel : submitLabel}
         </Button>
       </Stack>
     </Box>

@@ -1,5 +1,5 @@
 // Series list page redesigned with Material UI components
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -7,45 +7,53 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import NavBar from '../components/navBar/navBar.jsx';
 import SeriesList from '../components/seriesList/seriesList.jsx';
+import SeriesEditDialog from '../components/seriesEditDialog/seriesEditDialog.jsx';
 
-const SeriesListPage = ({ series = [], onEditSeries, onDeleteSeries }) => {
+const SeriesListPage = ({ series = [], onEditSeries, onDeleteSeries, isLoading = false, errorMessage = '' }) => {
   const navigate = useNavigate();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedSerie, setSelectedSerie] = useState(null);
+  const [dialogError, setDialogError] = useState('');
 
-  const promptField = (label, currentValue) => {
-    const response = window.prompt(label, currentValue ?? '');
-    if (response === null) return currentValue;
-    return response.trim() === '' ? currentValue : response.trim();
+  const openEditDialog = (serie) => {
+    if (!serie) return;
+    setSelectedSerie(serie);
+    setDialogError('');
+    setIsEditDialogOpen(true);
   };
 
-  const handleEdit = (index) => {
-    if (!onEditSeries) return;
-    const currentSerie = series[index];
-
-    if (!currentSerie) return;
-    const seasonsInput = promptField('Número de Temporadas', currentSerie.numberSeasons);
-    const parsedSeasons = Number(seasonsInput);
-    const updatedSerie = {
-      ...currentSerie,
-      title: promptField('Título', currentSerie.title),
-      numberSeasons: Number.isNaN(parsedSeasons) ? currentSerie.numberSeasons : parsedSeasons,
-      seasonReleaseDate: promptField('Data de Lançamento (yyyy-mm-dd)', currentSerie.seasonReleaseDate),
-      director: promptField('Diretor', currentSerie.director),
-      producer: promptField('Produtor', currentSerie.producer),
-      genre: promptField('Gênero', currentSerie.genre),
-      viewingDate: promptField('Data de Visualização (yyyy-mm-dd)', currentSerie.viewingDate)
-    };
-
-    onEditSeries(index, updatedSerie);
+  const closeEditDialog = () => {
+    setIsEditDialogOpen(false);
+    setSelectedSerie(null);
   };
 
-  const handleDelete = (index) => {
-    if (!onDeleteSeries) return;
+  const handleEditSubmit = async (updatedSerie) => {
+    if (!onEditSeries || !selectedSerie) return;
+
+    try {
+      await onEditSeries(updatedSerie);
+      closeEditDialog();
+    } catch (error) {
+      console.error('Erro ao editar série', error);
+      setDialogError('Não foi possível salvar as alterações. Tente novamente.');
+      throw error;
+    }
+  };
+
+  const handleDelete = async (serie) => {
+    if (!onDeleteSeries || !serie) return;
     const confirmed = window.confirm('Tem certeza que deseja excluir esta série?');
     if (confirmed) {
-      onDeleteSeries(index);
+      try {
+        await onDeleteSeries(serie);
+      } catch (error) {
+        console.error('Erro ao excluir série', error);
+      }
     }
   };
 
@@ -82,7 +90,37 @@ const SeriesListPage = ({ series = [], onEditSeries, onDeleteSeries }) => {
             </Button>
           </Stack>
         </Paper>
-        <SeriesList series={series} onEditSeries={handleEdit} onDeleteSeries={handleDelete} />
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {errorMessage}
+          </Alert>
+        )}
+        {isLoading ? (
+          <Paper
+            elevation={0}
+            sx={{
+              py: 6,
+              textAlign: 'center',
+              border: '1px solid',
+              borderColor: 'divider',
+              backgroundColor: 'rgba(255,255,255,0.85)'
+            }}
+          >
+            <Stack spacing={2} alignItems="center">
+              <CircularProgress />
+              <Typography color="text.secondary">Carregando séries...</Typography>
+            </Stack>
+          </Paper>
+        ) : (
+          <SeriesList series={series} onEditSeries={openEditDialog} onDeleteSeries={handleDelete} />
+        )}
+        <SeriesEditDialog
+          open={isEditDialogOpen}
+          serie={selectedSerie}
+          onClose={closeEditDialog}
+          onSubmit={handleEditSubmit}
+          errorMessage={dialogError}
+        />
       </Container>
     </Box>
   );

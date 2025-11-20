@@ -1,5 +1,5 @@
 // Register page using Material UI layout
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -10,12 +10,20 @@ import Alert from '@mui/material/Alert';
 import NavBar from '../components/navBar/navBar.jsx';
 import SeriesForm from '../components/seriesForm/seriesForm.jsx';
 
-const Register = ({ onRegisterSeries = () => {} }) => {
+const Register = ({ onRegisterSeries = () => Promise.resolve() }) => {
   const navigate = useNavigate();
+  const [submitError, setSubmitError] = useState('');
 
-  const handleSeriesSubmit = (seriesData) => {
-    onRegisterSeries(seriesData);
-    navigate('/series-list');
+  const handleSeriesSubmit = async (seriesData) => {
+    try {
+      setSubmitError('');
+      await onRegisterSeries(seriesData);
+      navigate('/series-list');
+    } catch (error) {
+      console.error('Erro ao registrar série', error);
+      setSubmitError('Não foi possível registrar a série. Tente novamente.');
+      throw error;
+    }
   };
 
   return (
@@ -43,7 +51,12 @@ const Register = ({ onRegisterSeries = () => {} }) => {
             <Alert severity="info">
               Utilize datas reais ou futuras para lembrar quando pretende assistir as próximas temporadas.
             </Alert>
-            <SeriesForm onSubmit={handleSeriesSubmit} />
+            {submitError && (
+              <Alert severity="error">
+                {submitError}
+              </Alert>
+            )}
+            <SeriesForm onSubmit={handleSeriesSubmit} savingLabel="Adicionando..." />
           </Stack>
         </Paper>
       </Container>

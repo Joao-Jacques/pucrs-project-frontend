@@ -15,10 +15,14 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import MovieFilterRoundedIcon from '@mui/icons-material/MovieFilterRounded';
 
+const getSerieId = (serie) => serie?.id ?? serie?._id ?? null;
+
 const formatDate = (dateValue) => {
   if (!dateValue) return '-';
-  const [year, month, day] = dateValue.split('-');
-  if (!year || !month || !day) return dateValue;
+  const normalizedValue = typeof dateValue === 'string' ? dateValue : String(dateValue);
+  const [datePart] = normalizedValue.split('T');
+  const [year, month, day] = datePart.split('-');
+  if (!year || !month || !day) return normalizedValue;
   return `${day}/${month}/${year}`;
 };
 
@@ -75,37 +79,50 @@ const SeriesList = ({ series = [], onEditSeries, onDeleteSeries }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {series.map((serie, index) => (
-            <TableRow hover key={`${serie.title}-${index}`}>
-              <TableCell>{serie.title}</TableCell>
-              <TableCell>{serie.numberSeasons}</TableCell>
-              <TableCell>{formatDate(serie.seasonReleaseDate)}</TableCell>
-              <TableCell>{serie.director}</TableCell>
-              <TableCell>{serie.producer}</TableCell>
-              <TableCell>{serie.genre}</TableCell>
-              <TableCell>{formatDate(serie.viewingDate)}</TableCell>
-              {hasActions && (
-                <TableCell>
-                  <Stack direction="row" spacing={1}>
-                    {onEditSeries && (
-                      <Tooltip title="Editar série">
-                        <IconButton color="primary" onClick={() => onEditSeries(index)} size="small">
-                          <EditRoundedIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                    {onDeleteSeries && (
-                      <Tooltip title="Excluir série">
-                        <IconButton color="error" onClick={() => onDeleteSeries(index)} size="small">
-                          <DeleteRoundedIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                  </Stack>
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
+          {series.map((serie, index) => {
+            const serieKey = getSerieId(serie) ?? `${serie.title}-${index}`;
+            return (
+              <TableRow hover key={serieKey} data-cy="series-table-row">
+                <TableCell>{serie.title}</TableCell>
+                <TableCell>{serie.numberSeasons}</TableCell>
+                <TableCell>{formatDate(serie.seasonReleaseDate)}</TableCell>
+                <TableCell>{serie.director}</TableCell>
+                <TableCell>{serie.producer}</TableCell>
+                <TableCell>{serie.genre}</TableCell>
+                <TableCell>{formatDate(serie.viewingDate)}</TableCell>
+                {hasActions && (
+                  <TableCell>
+                    <Stack direction="row" spacing={1}>
+                      {onEditSeries && (
+                        <Tooltip title="Editar série">
+                          <IconButton
+                            color="primary"
+                            onClick={() => onEditSeries(serie)}
+                            size="small"
+                            data-cy="edit-series-button"
+                          >
+                            <EditRoundedIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {onDeleteSeries && (
+                        <Tooltip title="Excluir série">
+                          <IconButton
+                            color="error"
+                            onClick={() => onDeleteSeries(serie)}
+                            size="small"
+                            data-cy="delete-series-button"
+                          >
+                            <DeleteRoundedIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </Stack>
+                  </TableCell>
+                )}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>

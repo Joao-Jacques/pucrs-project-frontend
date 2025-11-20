@@ -33,7 +33,7 @@ const NavBar = () => {
     >
       <Container maxWidth="lg">
         <Toolbar disableGutters sx={{ justifyContent: 'space-between', py: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+          <Typography variant="h7" sx={{ fontWeight: 700, color: 'primary.main' }}>
             Aplicação de Séries
           </Typography>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
