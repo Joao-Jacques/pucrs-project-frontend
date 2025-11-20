@@ -12,7 +12,7 @@ const navLinks = [
   { label: 'Página Inicial', path: '/' },
   { label: 'Sobre', path: '/about' },
   { label: 'Adicionar Séries', path: '/register' },
-  { label: 'Lista de Séries', path: '/series-list' }
+  { label: 'Lista de Séries', path: '/series-list' },
 ];
 
 const NavBar = () => {
@@ -28,7 +28,7 @@ const NavBar = () => {
         backgroundColor: 'rgba(255,255,255,0.9)',
         borderBottom: '1px solid',
         borderColor: 'divider',
-        mb: 4
+        mb: 4,
       }}
     >
       <Container maxWidth="lg">
@@ -48,7 +48,7 @@ const NavBar = () => {
                   color={isActive ? 'primary' : 'inherit'}
                   sx={{
                     color: isActive ? 'primary.contrastText' : 'text.primary',
-                    px: 2.5
+                    px: 2.5,
                   }}
                 >
                   {link.label}

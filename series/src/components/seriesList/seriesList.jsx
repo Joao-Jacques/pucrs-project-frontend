@@ -39,7 +39,7 @@ const SeriesList = ({ series = [], onEditSeries, onDeleteSeries }) => {
           textAlign: 'center',
           border: '1px dashed',
           borderColor: 'divider',
-          background: 'rgba(255,255,255,0.8)'
+          background: 'rgba(255,255,255,0.8)',
         }}
       >
         <Stack spacing={1} alignItems="center">
@@ -62,7 +62,7 @@ const SeriesList = ({ series = [], onEditSeries, onDeleteSeries }) => {
         border: '1px solid',
         borderColor: 'divider',
         backdropFilter: 'blur(6px)',
-        backgroundColor: 'rgba(255,255,255,0.85)'
+        backgroundColor: 'rgba(255,255,255,0.85)',
       }}
     >
       <Table size="medium">

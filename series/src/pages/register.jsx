@@ -36,7 +36,7 @@ const Register = ({ onRegisterSeries = () => Promise.resolve() }) => {
             p: { xs: 3, md: 5 },
             border: '1px solid',
             borderColor: 'divider',
-            backdropFilter: 'blur(6px)'
+            backdropFilter: 'blur(6px)',
           }}
         >
           <Stack spacing={3}>

@@ -19,14 +19,14 @@ const highlights = [
     title: 'Organize sua biblioteca pessoal',
     description: 'Crie registros completos das séries que você ama acompanhar.',
     icon: <LibraryAddRoundedIcon color="primary" />,
-    color: 'primary.light'
+    color: 'primary.light',
   },
   {
     title: 'Memorize seus momentos favoritos',
     description: 'Guarde as datas em que você assistiu cada temporada.',
     icon: <FavoriteRoundedIcon color="secondary" />,
-    color: 'secondary.light'
-  }
+    color: 'secondary.light',
+  },
 ];
 
 const Home = () => {
@@ -72,7 +72,7 @@ const Home = () => {
                 borderRadius: 6,
                 border: '1px solid',
                 borderColor: 'divider',
-                background: 'linear-gradient(135deg, rgba(94,96,206,0.15), rgba(78,168,222,0.15))'
+                background: 'linear-gradient(135deg, rgba(94,96,206,0.15), rgba(78,168,222,0.15))',
               }}
             >
               <Stack spacing={3}>

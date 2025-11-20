@@ -12,7 +12,7 @@ import NavBar from '../components/navBar/navBar.jsx';
 const milestones = [
   { title: 'Cadastro inteligente', description: 'Campos completos para registrar temporadas, datas e detalhes.' },
   { title: 'Lista interativa', description: 'Edite ou exclua séries com apenas alguns cliques.' },
-  { title: 'Interface acolhedora', description: 'Paleta suave e componentes responsivos para qualquer tela.' }
+  { title: 'Interface acolhedora', description: 'Paleta suave e componentes responsivos para qualquer tela.' },
 ];
 
 const About = () => {
@@ -26,7 +26,7 @@ const About = () => {
             p: { xs: 3, md: 5 },
             border: '1px solid',
             borderColor: 'divider',
-            backdropFilter: 'blur(6px)'
+            backdropFilter: 'blur(6px)',
           }}
         >
           <Stack spacing={3}>

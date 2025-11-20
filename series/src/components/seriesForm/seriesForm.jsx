@@ -14,7 +14,7 @@ const defaultValues = {
   director: '',
   producer: '',
   genre: '',
-  viewingDate: ''
+  viewingDate: '',
 };
 
 const normalizeDate = (value) => {
@@ -30,7 +30,7 @@ const normalizeValues = (values = {}) => ({
   director: values.director ?? '',
   producer: values.producer ?? '',
   genre: values.genre ?? '',
-  viewingDate: normalizeDate(values.viewingDate)
+  viewingDate: normalizeDate(values.viewingDate),
 });
 
 const SeriesForm = ({
@@ -38,7 +38,7 @@ const SeriesForm = ({
   initialValues = defaultValues,
   submitLabel = 'Adicionar Série',
   savingLabel = 'Salvando...',
-  titleText = 'Adicione uma nova série'
+  titleText = 'Adicione uma nova série',
 }) => {
   const [values, setValues] = useState(normalizeValues(initialValues));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +50,7 @@ const SeriesForm = ({
   const handleChange = (field) => (event) => {
     setValues((prev) => ({
       ...prev,
-      [field]: event.target.value
+      [field]: event.target.value,
     }));
   };
 
@@ -68,7 +68,7 @@ const SeriesForm = ({
       director: values.director.trim(),
       producer: values.producer.trim(),
       genre: values.genre.trim(),
-      viewingDate: values.viewingDate
+      viewingDate: values.viewingDate,
     };
 
     try {
@@ -86,7 +86,7 @@ const SeriesForm = ({
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        width: '100%'
+        width: '100%',
       }}
     >
       <Stack spacing={2.5}>

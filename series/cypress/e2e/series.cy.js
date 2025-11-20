@@ -9,8 +9,8 @@ describe('Series management flow', () => {
       req.reply({
         statusCode: 200,
         body: {
-          ...req.body
-        }
+          ...req.body,
+        },
       });
     }).as('updateSeries');
 
@@ -39,14 +39,14 @@ describe('Series management flow', () => {
       director: 'Ben Stiller',
       producer: 'Red Hour Productions',
       genre: 'Drama',
-      viewingDate: '2022-03-01'
+      viewingDate: '2022-03-01',
     };
 
     cy.intercept('POST', 'http://localhost:5000/series', (req) => {
       expect(req.body.title).to.eq(newSerie.title);
       req.reply({
         statusCode: 201,
-        body: newSerie
+        body: newSerie,
       });
     }).as('createSeries');
 
@@ -74,7 +74,7 @@ describe('Series management flow', () => {
 
   it('removes a series from the list', () => {
     cy.intercept('DELETE', 'http://localhost:5000/series/*', {
-      statusCode: 200
+      statusCode: 200,
     }).as('deleteSeries');
 
     cy.visit('/series-list');

@@ -13,7 +13,7 @@ const SeriesEditDialog = ({
   serie,
   onClose,
   onSubmit = () => Promise.resolve(),
-  errorMessage = ''
+  errorMessage = '',
 }) => {
   const handleSubmit = async (formValues) => {
     if (!serie) return;

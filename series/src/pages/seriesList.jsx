@@ -68,7 +68,7 @@ const SeriesListPage = ({ series = [], onEditSeries, onDeleteSeries, isLoading =
             border: '1px solid',
             borderColor: 'divider',
             backgroundColor: 'rgba(255,255,255,0.85)',
-            mb: 3
+            mb: 3,
           }}
         >
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} justifyContent="space-between" alignItems="center">
@@ -103,7 +103,7 @@ const SeriesListPage = ({ series = [], onEditSeries, onDeleteSeries, isLoading =
               textAlign: 'center',
               border: '1px solid',
               borderColor: 'divider',
-              backgroundColor: 'rgba(255,255,255,0.85)'
+              backgroundColor: 'rgba(255,255,255,0.85)',
             }}
           >
             <Stack spacing={2} alignItems="center">
