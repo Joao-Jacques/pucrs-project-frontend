@@ -54,4 +54,22 @@ series/
 └── vite.config.js
 ```
 
-Com isso você tem contexto do projeto e todas as instruções necessárias para subir o frontend em ambiente local.
+## Screenshots
+
+Abaixo estão prints das principais telas do projeto (arquivos em `docs/images`):
+
+- **Home:**
+
+   ![Home](docs/images/home.png)
+
+- **About:**
+
+   ![About](docs/images/about.png)
+
+- **Formulário de cadastro:**
+
+   ![Formulário](docs/images/forms.png)
+
+- **Lista de séries:**
+
+   ![Lista](docs/images/list.png)

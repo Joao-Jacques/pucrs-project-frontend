@@ -1,9 +1,9 @@
 //Series form component for the series application
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const SeriesForm = ({ onSubmit = () => {} }) => {
+const SeriesForm = ({ onSubmit = () => {}, initialData = null, onCancel = null }) => {
     const [title, setTitle] = useState('');
     const [numberSeasons, setNumberSeasons] = useState(1);
     const [seasonReleaseDate, setSeasonReleaseDate] = useState(null);
@@ -11,12 +11,30 @@ const SeriesForm = ({ onSubmit = () => {} }) => {
     const [producer, setProducer] = useState('');
     const [genre, setGenre] = useState('');
     const [viewingDate, setViewingDate] = useState(null);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        if (!initialData) return;
+        setTitle(initialData.title || '');
+        setNumberSeasons(initialData.numberSeasons || 1);
+        setSeasonReleaseDate(initialData.seasonReleaseDate ? new Date(initialData.seasonReleaseDate) : null);
+        setDirector(initialData.director || '');
+        setProducer(initialData.producer || '');
+        setGenre(initialData.genre || '');
+        setViewingDate(initialData.viewingDate ? new Date(initialData.viewingDate) : null);
+        setError('');
+    }, [initialData]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         // convert Date objects (from DatePicker) to ISO yyyy-mm-dd strings for storage/compatibility
         const formattedSeasonReleaseDate = seasonReleaseDate ? seasonReleaseDate.toISOString().split('T')[0] : '';
         const formattedViewingDate = viewingDate ? viewingDate.toISOString().split('T')[0] : '';
+
+        if (title.trim() === '') {
+            setError('O título é obrigatório.');
+            return;
+        }
 
         const newSeries = {
             title: title.trim(),
@@ -28,17 +46,21 @@ const SeriesForm = ({ onSubmit = () => {} }) => {
             viewingDate: formattedViewingDate
         };
         onSubmit(newSeries);
-        setTitle('');
-        setNumberSeasons(1);
-        setSeasonReleaseDate(null);
-        setDirector('');
-        setProducer('');
-        setGenre('');
-        setViewingDate(null);
+        // clear form only when not editing
+        if (!initialData) {
+            setTitle('');
+            setNumberSeasons(1);
+            setSeasonReleaseDate(null);
+            setDirector('');
+            setProducer('');
+            setGenre('');
+            setViewingDate(null);
+        }
     };
     return (
         <form className="series-form" onSubmit={handleSubmit}>
-            <h2>Adicione uma nova série</h2>
+            <h2>{initialData ? 'Editar série' : 'Adicione uma nova série'}</h2>
+            {error && <div className="form-error">{error}</div>}
             <label>
                 Título:
                 <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -85,7 +107,14 @@ const SeriesForm = ({ onSubmit = () => {} }) => {
                     required
                 />
             </label>
-            <button type="submit">Adicionar Série</button>
+            <div className="form-actions">
+                <button type="submit">{initialData ? 'Salvar' : 'Adicionar Série'}</button>
+                {initialData && onCancel && (
+                    <button type="button" onClick={onCancel} className="cancel">
+                        Cancelar
+                    </button>
+                )}
+            </div>
         </form>
     );
 };

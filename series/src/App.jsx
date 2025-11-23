@@ -1,5 +1,6 @@
 // series application main App component
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/home.jsx';
 import About from './pages/about.jsx';
@@ -27,7 +28,27 @@ const App = () => {
             viewingDate: "2020-11-15"
         }
     ];
-    const [series, setSeries] = useState(sampleSeries);
+    const STORAGE_KEY = 'seriesData';
+
+    const [series, setSeries] = useState(() => {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                return JSON.parse(raw);
+            }
+        } catch (e) {
+            // ignore parse errors and fall back to sample
+        }
+        return sampleSeries;
+    });
+
+    useEffect(() => {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(series));
+        } catch (e) {
+            // ignore storage errors
+        }
+    }, [series]);
 
     const handleAddSeries = (newSeries) => {
         setSeries((prevSeries) => [...prevSeries, newSeries]);

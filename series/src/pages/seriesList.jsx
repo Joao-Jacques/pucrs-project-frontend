@@ -1,45 +1,39 @@
 // Series list page with edit/delete actions
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/navBar/navBar.jsx';
 import SeriesList from '../components/seriesList/seriesList.jsx';
+import Modal from '../components/modal/modal.jsx';
+import SeriesForm from '../components/seriesForm/seriesForm.jsx';
 
 const SeriesListPage = ({ series = [], onEditSeries, onDeleteSeries }) => {
     const navigate = useNavigate();
 
-    const promptField = (label, currentValue) => {
-        const response = window.prompt(label, currentValue ?? '');
-        if (response === null) return currentValue;
-        return response.trim() === '' ? currentValue : response.trim();
+    const [editingIndex, setEditingIndex] = useState(null);
+    const [confirmingIndex, setConfirmingIndex] = useState(null);
+
+    const openEdit = (index) => {
+        setEditingIndex(index);
     };
 
-    const handleEdit = (index) => {
-        if (!onEditSeries) return;
-        const currentSerie = series[index];
-        if (!currentSerie) return;
+    const closeEdit = () => setEditingIndex(null);
 
-        const seasonsInput = promptField('Número de Temporadas', currentSerie.numberSeasons);
-        const parsedSeasons = Number(seasonsInput);
-        const updatedSerie = {
-            ...currentSerie,
-            title: promptField('Título', currentSerie.title),
-            numberSeasons: Number.isNaN(parsedSeasons) ? currentSerie.numberSeasons : parsedSeasons,
-            seasonReleaseDate: promptField('Data de Lançamento (yyyy-mm-dd)', currentSerie.seasonReleaseDate),
-            director: promptField('Diretor', currentSerie.director),
-            producer: promptField('Produtor', currentSerie.producer),
-            genre: promptField('Gênero', currentSerie.genre),
-            viewingDate: promptField('Data de Visualização (yyyy-mm-dd)', currentSerie.viewingDate)
-        };
-
-        onEditSeries(index, updatedSerie);
+    const handleEditSubmit = (updatedData) => {
+        if (onEditSeries && editingIndex !== null) {
+            onEditSeries(editingIndex, updatedData);
+        }
+        closeEdit();
     };
+
+    const openConfirmDelete = (index) => setConfirmingIndex(index);
+
+    const closeConfirm = () => setConfirmingIndex(null);
 
     const handleDelete = (index) => {
-        if (!onDeleteSeries) return;
-        const confirmed = window.confirm('Tem certeza que deseja excluir esta série?');
-        if (confirmed) {
+        if (onDeleteSeries) {
             onDeleteSeries(index);
         }
+        closeConfirm();
     };
 
     return (
@@ -51,7 +45,31 @@ const SeriesListPage = ({ series = [], onEditSeries, onDeleteSeries }) => {
                     Registrar nova série
                 </button>
             </div>
-            <SeriesList series={series} onEditSeries={handleEdit} onDeleteSeries={handleDelete} />
+            <SeriesList series={series} onEditSeries={openEdit} onDeleteSeries={openConfirmDelete} />
+
+            {editingIndex !== null && (
+                <Modal title="Editar Série" onClose={closeEdit}>
+                    <SeriesForm
+                        initialData={series[editingIndex]}
+                        onSubmit={handleEditSubmit}
+                        onCancel={closeEdit}
+                    />
+                </Modal>
+            )}
+
+            {confirmingIndex !== null && (
+                <Modal title="Confirmar exclusão" onClose={closeConfirm}>
+                    <p>Tem certeza que deseja excluir a série "{series[confirmingIndex].title}"?</p>
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                        <button onClick={() => handleDelete(confirmingIndex)} className="delete">
+                            Excluir
+                        </button>
+                        <button onClick={closeConfirm} className="cancel">
+                            Cancelar
+                        </button>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };
