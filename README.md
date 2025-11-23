@@ -46,6 +46,26 @@ npm run dev
 npm run cy:open # ou npm run cy:run
 ```
 
+## Capturas de tela
+
+As imagens abaixo mostram telas principais da aplicação; elas ficam em `series/docs/images`.
+
+- **Home:**
+
+   ![Home](/series/docs/images/home.png)
+
+- **Sobre:**
+
+   ![About](/series/docs/images/about.png)
+
+- **Formulário de cadastro:**
+
+   ![Formulário](/series/docs/images/forms.png)
+
+- **Lista de séries:**
+
+   ![Lista](/series/docs/images/list.png)
+
 ## Estrutura básica
 ```
 series/
@@ -63,5 +83,3 @@ series/
 ├── package.json
 └── vite.config.js
 ```
-
-Com isso você tem contexto do projeto e todas as instruções necessárias para subir o frontend em ambiente local.
