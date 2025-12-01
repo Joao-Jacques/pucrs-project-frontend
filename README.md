@@ -60,16 +60,16 @@ Abaixo estão prints das principais telas do projeto (arquivos em `docs/images`)
 
 - **Home:**
 
-   ![Home](docs/images/home.png)
+   ![Home](series/docs/images/home.png)
 
 - **About:**
 
-   ![About](docs/images/about.png)
+   ![About](series/docs/images/about.png)
 
 - **Formulário de cadastro:**
 
-   ![Formulário](docs/images/forms.png)
+   ![Formulário](series/docs/images/forms.png)
 
 - **Lista de séries:**
 
-   ![Lista](docs/images/list.png)
+   ![Lista](series/docs/images/list.png)
