@@ -8,8 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:open": "set ELECTRON_DISABLE_GPU=1 && set CYPRESS_BROWSER=chrome && cypress open",
+    "cy:run": "set ELECTRON_DISABLE_GPU=1 && set CYPRESS_BROWSER=chrome && cypress run"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

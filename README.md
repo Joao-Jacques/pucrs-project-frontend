@@ -1,21 +1,21 @@
-# PUCRS Project – Series Manager Frontend
+# PUCRS Project - Frontend do Gerenciador de Séries
 
 ## Visão geral
-Aplicação React criada com Vite para gerenciar séries assistidas. O usuário pode navegar pelas páginas Home, Sobre, Cadastro e Lista, registrar novas séries usando um formulário com controle de datas e visualizar, editar ou excluir os itens cadastrados. Um conjunto inicial de séries (Stranger Things e Breaking Bad) é carregado apenas como exemplo em tempo de execução.
+Aplicação React (Vite) para gerenciar séries assistidas: navegue entre as páginas Home/About/Register/List, adicione séries com controle de datas, e edite/exclua entradas em memória. Dados iniciais (ex.: Stranger Things, Breaking Bad) são carregados em tempo de execução como exemplos.
 
-Principais tecnologias: React 19, React Router, React DatePicker, Vite e ESLint.
+Stack: React 19, React Router, React DatePicker, Vite, ESLint, Cypress.
 
-## Recursos principais
-- Navegação por rotas (`/`, `/about`, `/register`, `/series-list`) com barra fixa.
-- Formulário com validações e DatePicker para registrar séries (título, temporadas, datas, diretor, produtor e gênero).
-- Listagem com formatação de datas e ações de edição/exclusão em memória.
-- Fluxo de cadastro → redirecionamento automático para a lista após salvar.
+## Principais funcionalidades
+- Rotas (`/`, `/about`, `/register`, `/series-list`) com uma barra fixa no topo.
+- Formulário com validações e `DatePicker` para título, temporadas, datas, diretor, produtor e gênero.
+- Tela de listagem com formatação de datas e ações de editar/excluir.
+- Ao salvar uma série, o usuário é redirecionado automaticamente para a lista.
 
 ## Pré-requisitos
-- Node.js 18+ e npm instalados (`node -v` e `npm -v` para conferir).
+- Node.js 18+ e npm (verifique com `node -v` e `npm -v`).
 
 ## Como executar localmente
-1. Clone o repositório e acesse a pasta do frontend:
+1. Clone o repositório e entre na pasta do frontend:
    ```bash
    git clone <repo-url>
    cd pucrs-project-frontend/series
@@ -28,58 +28,57 @@ Principais tecnologias: React 19, React Router, React DatePicker, Vite e ESLint.
    ```bash
    npm run dev
    ```
-4. Abra o navegador no endereço indicado pelo Vite (geralmente `http://localhost:5173`) para usar o app.
+4. Abra a URL mostrada pelo Vite (normalmente http://localhost:5173).
 
 ## Scripts úteis
-- `npm run dev` – servidor de desenvolvimento com recarregamento automático.
-- `npm run build` – gera a build otimizada para produção.
-- `npm run preview` – serve a build gerada para validação local.
-- `npm run lint` – roda o ESLint com as regras do projeto.
-- `npm run cy:open` – abre a interface do Cypress para executar os fluxos de ponta a ponta.
-- `npm run cy:run` – roda a suíte do Cypress em modo headless (útil para CI/CD).
+- `npm run dev` - inicia o servidor de desenvolvimento com HMR.
+- `npm run build` - gera o build de produção.
+- `npm run preview` - serve o bundle gerado localmente.
+- `npm run lint` - executa o ESLint.
+- `npm run cy:open` - abre o Cypress (o projeto já pode configurar flags para mitigar crashes no Windows).
+- `npm run cy:run` - executa o Cypress em modo headless.
 
-## Testes com Cypress
-Os testes end-to-end validam os fluxos principais (listagem, cadastro, edição, remoção e navegação). Eles usam interceptações da API para simular respostas do backend, garantindo resultados reproduzíveis. Antes de rodá-los, mantenha as dependências instaladas e o servidor de desenvolvimento em execução:
+## Testes Cypress (E2E)
+Os testes end-to-end cobrem listagem, criação, edição, exclusão e navegação. Inicie o servidor de desenvolvimento antes de executá-los:
 
 ```bash
 npm run dev
-npm run cy:open # ou npm run cy:run
+npm run cy:open   # ou npm run cy:run
 ```
 
+### Sobre o erro "bad IPC 114" (encerramento do renderer)
+- Em Windows, o Chromium às vezes encerra o processo renderer com uma mensagem de IPC ruim (reason 114). Isso pode ser causado por configurações de sistema, proteção de integridade de código ou interações com drivers/antivírus.
+- Os scripts do projeto podem já aplicar flags para mitigar esse problema (ex.: desabilitar GPU ou desabilitar funcionalidades de integridade). Use os scripts do `package.json` antes de executar `npx cypress open` manualmente.
+- Se o problema persistir, tente:
+  - Executar em modo headless: `npm run cy:run`.
+  - Atualizar o Chrome/Chromium e o Cypress para versões compatíveis.
+  - Testar com o navegador Electron: `npx cypress run --browser electron`.
+  - Verificar e, temporariamente, desativar antivírus/Proteção de Exploits do Windows para depuração.
+
 ## Capturas de tela
+As imagens estão em `series/docs/images`.
 
-As imagens abaixo mostram telas principais da aplicação; elas ficam em `series/docs/images`.
-
-- **Home:**
-
-   ![Home](/series/docs/images/home.png)
-
-- **Sobre:**
-
-   ![About](/series/docs/images/about.png)
-
-- **Formulário de cadastro:**
-
-   ![Formulário](/series/docs/images/forms.png)
-
-- **Lista de séries:**
-
-   ![Lista](/series/docs/images/list.png)
+- Home: ![Home](/series/docs/images/home.png)
+- About: ![About](/series/docs/images/about.png)
+- Formulário de registro: ![Formulário](/series/docs/images/forms.png)
+- Lista de séries: ![Lista](/series/docs/images/list.png)
 
 ## Estrutura básica
 ```
 series/
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── navBar/
-│   │   ├── seriesForm/
-│   │   └── seriesList/
-│   └── pages/
-│       ├── home.jsx
-│       ├── about.jsx
-│       ├── register.jsx
-│       └── seriesList.jsx
-├── package.json
-└── vite.config.js
+|- public/
+|- src/
+|  |- components/
+|  |  |- navBar/
+|  |  |- seriesForm/
+|  |  |- seriesList/
+|  |- pages/
+|     |- home.jsx
+|     |- about.jsx
+|     |- register.jsx
+|     |- seriesList.jsx
+|- package.json
+|- vite.config.js
 ```
+
+````
